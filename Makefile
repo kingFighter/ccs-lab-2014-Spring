@@ -77,6 +77,11 @@ clean:
 lab%-handin.tar.gz: clean
 	tar cf - `find . -type f | grep -v '^\.*$$' | grep -v '/CVS/' | grep -v '/\.svn/' | grep -v '/\.git/' | grep -v 'lab[0-9].*\.tar\.gz' | grep -v '/submit.key$$'` | gzip > $@
 
+.PHONY: prepare-submit
+prepare-submit: lab1-handin.tar.gz
+
 .PHONY: submit
 submit: lab1-handin.tar.gz
 	./submit.py $<
+
+.PRECIOUS: lab1-handin.tar.gz
