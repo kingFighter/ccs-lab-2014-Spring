@@ -243,6 +243,33 @@ void split_path(char *pn)
     setenv("SCRIPT_FILENAME", pn, 1);
 }
 
+static int cgi_uid = -1;
+static int cgi_gid = -1;
+
+void
+http_set_executable_uid_gid(int uid, int gid)
+{
+    cgi_uid = uid;
+    cgi_gid = gid;
+}
+
+static int
+valid_cgi_script(struct stat *st)
+{
+    if (!S_ISREG(st->st_mode))
+        return 0;
+
+    if (!(st->st_mode & S_IXUSR))
+        return 0;
+
+    if (cgi_uid >= 0 && cgi_gid >= 0) {
+        if (st->st_uid != cgi_uid || st->st_gid != cgi_gid)
+            return 0;
+    }
+
+    return 1;
+}
+
 void http_serve(int fd, const char *name)
 {
     void (*handler)(int, const char *) = http_serve_none;
@@ -258,7 +285,7 @@ void http_serve(int fd, const char *name)
     if (!stat(pn, &st))
     {
         /* executable bits -- run as CGI script */
-        if (S_ISREG(st.st_mode) && (st.st_mode & S_IXUSR))
+        if (valid_cgi_script(&st))
             handler = http_serve_executable;
         else if (S_ISDIR(st.st_mode))
             handler = http_serve_directory;

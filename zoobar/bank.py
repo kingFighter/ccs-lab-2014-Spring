@@ -33,3 +33,8 @@ def balance(username):
     person = db.query(Person).get(username)
     return person.zoobars
 
+def get_log(username):
+    db = transfer_setup()
+    return db.query(Transfer).filter(or_(Transfer.sender==username,
+                                         Transfer.recipient==username))
+
