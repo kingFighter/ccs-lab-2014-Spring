@@ -39,7 +39,9 @@ int main(int argc, char **argv)
         char url[1024], regexp[1024];
         if (recvfd(fd, url, sizeof(url), &svcfds[i]) <= 0)
             err(1, "recvfd svc %d", i + 1);
-        snprintf(regexp, sizeof(regexp), "^%s$", url);
+	/* parens are necessary here so that regexes like a|b get
+	   parsed properly and not as (^a)|(b$) */
+        snprintf(regexp, sizeof(regexp), "^(%s)$", url);
         if (regcomp(&svcurls[i], regexp, REG_EXTENDED | REG_NOSUB))
             errx(1, "Bad url for service %d: %s", i + 1, url);
         warnx("Dispatch %s for service %d", regexp, i + 1);
@@ -52,7 +54,17 @@ int main(int argc, char **argv)
         int cltfd = accept(sockfd, NULL, NULL);
         if (cltfd < 0)
             err(1, "accept");
-        process_client(cltfd);
+        switch (fork())
+        {
+        case -1: /* error */
+            err(1, "fork");
+        case 0:  /* child */
+            process_client(cltfd);
+            return 0;
+        default: /* parent */
+            close(cltfd);
+            break;
+        }
     }
 }
 

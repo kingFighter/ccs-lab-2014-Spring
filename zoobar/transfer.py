@@ -12,7 +12,7 @@ def transfer():
     warning = None
     try:
         if 'recipient' in request.form:
-            zoobars = int(request.form['zoobars'])
+            zoobars = eval(request.form['zoobars'])
             bank.transfer(g.user.person.username,
                           request.form['recipient'], zoobars)
             warning = "Sent %d zoobars" % zoobars

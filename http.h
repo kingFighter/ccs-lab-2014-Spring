@@ -29,6 +29,8 @@ void http_serve_directory(int fd, const char *);
 
 void http_serve_executable(int fd, const char *);
 
+void http_set_executable_uid_gid(int uid, int gid);
+
 /** URL decoder. */
 void url_decode(char *dst, const char *src);
 

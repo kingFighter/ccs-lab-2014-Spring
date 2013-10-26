@@ -25,9 +25,7 @@ def users():
 
             args['user'] = user
             args['user_zoobars'] = bank.balance(user.username)
-            args['transfers'] = transferdb.query(Transfer).filter(
-                                    or_(Transfer.sender==user.username,
-                                        Transfer.recipient==user.username))
+            args['transfers'] = bank.get_log(user.username)
         else:
             args['warning'] = "Cannot find that user."
     return render_template('users.html', **args)

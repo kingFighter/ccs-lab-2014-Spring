@@ -134,7 +134,7 @@ pid_t launch_svc(CONF *conf, const char *name)
     argv[0] = cmd;
     /* argv[1] is used by svc to receive data from zookd */
     asprintf(&argv[1], "%d", fds[1]);
-    
+
     /* split extra arguments */
     if ((args = NCONF_get_string(conf, name, "args")))
     {
@@ -158,6 +158,7 @@ pid_t launch_svc(CONF *conf, const char *name)
 
     if ((groups = NCONF_get_string(conf, name, "extra_gids")))
     {
+        ngids = 0;
         CONF_parse_list(groups, ',', 1, &group_parse_cb, NULL);
         /* set the grouplist to gids */
         for (i = 0; i < ngids; i++)

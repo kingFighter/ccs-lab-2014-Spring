@@ -9,9 +9,16 @@
 int main(int argc, char **argv)
 {
     int fd;
-    if (argc != 2)
+    if (argc != 2 && argc != 4)
         errx(1, "Wrong arguments");
     fd = atoi(argv[1]);
+
+    if (argc == 4) {
+        int uid = atoi(argv[2]);
+        int gid = atoi(argv[3]);
+        warnx("cgi uid %d, gid %d", uid, gid);
+        http_set_executable_uid_gid(uid, gid);
+    }
 
     signal(SIGPIPE, SIG_IGN);
     signal(SIGCHLD, SIG_IGN);
