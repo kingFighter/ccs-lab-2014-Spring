@@ -15,3 +15,58 @@ another description.
     <paste offending line(s) of code here>
 
 # many more come here
+[http.c:165]
+The 'envvar' variable can be overwritten by function 'sprintf' because
+'sprintf' is unsafe. 'envvar' is only 512 bytes, but the 'buf' is 8192
+bytes.
+    static char buf[8192];      /* static variables are not on the stack */
+    char envvar[512];
+    ....
+    ....
+    sprintf(envvar, "HTTP_%s", buf);
+
+[http.c:255]
+The 'pn' variable can be overwritten by function 'strcat'('name' variable) because
+'strcat' is unsafe. and 'pn' is only 1024 bytes, but 'name' variable
+can be larger than 1024 bytes.(See 'zookfs:.c:40')
+
+void http_serve(int fd, const char *name)
+    ...
+    char pn[1024];
+    strcat(pn, name);
+    ...
+
+'zookfs.c:40'
+http_serve(sockfd, getenv("REQUEST_URI"));
+
+[http.c:317]
+The 'dst' variable can be overwritten by function 'strcpy'('dirname'
+variable) and 'strcat'('filename' variable) beacuse 'strcpy' and
+'strcat' is unsafe. In function 'http_serve_directory' will call
+'dir_join', 'dst' variable is only 1024 bytes, but the 'dirname' and
+ 'filename' can be larger.
+
+void dir_join(char *dst, const char *dirname, const char *filename) {
+    strcpy(dst, dirname);
+    ...
+    strcat(dst, filename);
+
+'http.c:331,333'
+void http_serve_directory(int fd, const char *pn) {
+...
+char name[1024];
+dir_join(name, pn, indices[i]);
+...
+dir_join(name, getenv("SCRIPT_NAME"), indices[i]);
+...
+
+*no how, and is not enough*
+
+Stack canaries, named for their analogy to a canary in a coal mine,
+are used to detect a stack buffer overflow before execution of
+malicious code can occur. This method works by placing a small
+integer, the value of which is randomly chosen at program start, in
+memory just before the stack return pointer.
+
+This technique can greatly increase the difficulty of exploiting a
+stack buffer overflow. But it still cannot prevent the vulnerability.
