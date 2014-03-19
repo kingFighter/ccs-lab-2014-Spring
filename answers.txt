@@ -1,1 +1,8 @@
 ## Place your answers here.
+exploit-2a.py:
+trigger bugs on [http.c:421](bugs.txt) with the function 'url_decode'
+>>
+req 'localhost:........HACK' will be stored in variable
+value'(512 bytes) with function 'url_decode'. And 'value' will out of
+bound, which corrupt return address of function 'http_request_headers'.
+>>
