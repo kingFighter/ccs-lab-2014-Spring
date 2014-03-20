@@ -1,4 +1,5 @@
 ## Place your answers here.
+[Exercise 2]
 exploit-2a.py:
 trigger bugs on [http.c:421](bugs.txt) with the function 'url_decode'
 >>
@@ -15,3 +16,12 @@ req "GET /HACKHACKHACK.....HACK" will be stored in variable 'pn'(1024
 bytes) with function 'strcat'.And 'pn' will be out of bound, which
 corrupt function pointer 'handler'.
 >>
+[Exercise 3]
+The other buffer overflow in Exercise 1 can be exploited in this
+manner.
+
+We can overflow 'value' to corrupt return address of function
+'http_request_headers', and the return address will be modified with
+address of local variable 'value' in the stack. And the content of
+'value' will be our shell code.We can jump to that address and execute
+it as what We have done in Exercise 3.
