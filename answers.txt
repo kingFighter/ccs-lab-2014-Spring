@@ -3,6 +3,15 @@ exploit-2a.py:
 trigger bugs on [http.c:421](bugs.txt) with the function 'url_decode'
 >>
 req 'localhost:........HACK' will be stored in variable
-value'(512 bytes) with function 'url_decode'. And 'value' will out of
-bound, which corrupt return address of function 'http_request_headers'.
+value'(512 bytes) with function 'url_decode'. And 'value' will be out
+of bound, which corrupt return address of function 'http_request_headers'.
+>>
+
+exploit-2b.py:
+trigger bugs on[http.c:255](bugs.txt) with the function 'strcat' ('pn'
+variable).
+>>
+req "GET /HACKHACKHACK.....HACK" will be stored in variable 'pn'(1024
+bytes) with function 'strcat'.And 'pn' will be out of bound, which
+corrupt function pointer 'handler'.
 >>
