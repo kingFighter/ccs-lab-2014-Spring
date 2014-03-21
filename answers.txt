@@ -25,3 +25,10 @@ We can overflow 'value' to corrupt return address of function
 address of local variable 'value' in the stack. And the content of
 'value' will be our shell code.We can jump to that address and execute
 it as what We have done in Exercise 3.
+[Exercise 4]
+  [http.c:165]:
+Yes,we can.It is obvious,'envvar' variable can be overflowed to
+overwrite return address to 'unlink' and the parameters can be put in
+'envvar' variable, too.
+  [http.c:317]:
+Yes,we can.It is the same as above.
