@@ -32,3 +32,33 @@ overwrite return address to 'unlink' and the parameters can be put in
 'envvar' variable, too.
   [http.c:317]:
 Yes,we can.It is the same as above.
+[Exercise 5]
+  [http.c:255](function 'http_serve')
+  Here is a code snippet 'strcat(pn, name)' in function 'http_serve',
+  normally both parameters cannot be NULL. We can hack the name to be
+  NULL, which will cause the program to have segment fault. The
+  exploit code is 'exploit-5a.py'. Here is the way:
+  In [zookfs.c:40] will call this function 'http_serve' with
+  parameters 'sockfd' and "getenv('REQUEST_URI')". We want
+  "getenv('REQUEST_URI')" NULL. Then we cannot setenv("REQUEST_URI").
+  In function 'env_deserialize(const char *env, size_t len)' will set
+  environment variables.
+  We find a code snippet:
+  >>
+   char *p = strchr(env, '=');
+   if (p == 0 || p - env > len)
+            break;
+  >>
+  When p - env > len, it stops set enviroment variables.And the 'len'
+  is the size of 'env'.So we just put more than 'len' characters on
+  'env', which will put 'REQUEST_URI' behind. Thus, so the information
+  of 'REQUEST_URI' is still there, but the enviroment variables won't
+  be set.We will use 'sprintf' to put more than 'len' characters on
+  'env':
+  [http.c:95](function 'http_request_line')
+  >>
+  envp += sprintf(envp, "REQUEST_METHOD=%s", buf) + 1;
+  envp += sprintf(envp, "SERVER_PROTOCOL=%s", sp2) + 1;
+  >>
+  The attacker can let the program stop running. We can replace
+  'sprintf' with 'snprintf' to fix it.
