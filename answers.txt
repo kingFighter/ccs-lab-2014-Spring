@@ -67,7 +67,7 @@ Yes,we can.It is the same as above.
   When we request a non-exist file, we can know the physical path on
   the server, which the attackers can use to do further hack.The
   exploit code is 'exploit-5b.py'.
-  We can only get the physical path, and it works beacuse the server
+  We can only get the physical path, and it works because the server
   reveal its physical path. We can fix by replace physical path with
   fake path.
   >>
@@ -77,3 +77,13 @@ Yes,we can.It is the same as above.
                                                      //fake path.
    }
   >>
+
+   Get files on server(NO ACL):
+   When we request a file,if it exists then we get it.It means the
+   attackers can get enough information on server, such as auth.py.
+   After reading those information, attackers can know how the scripts
+   on server works. And then he can get the administrator account or
+   other privacies.
+   This attack only helpe attacker do further hacking. And it works
+   because NO ACL is set. We can fix it by setting ACL control.The
+   exploit code is 'exploit-5c.py'.
