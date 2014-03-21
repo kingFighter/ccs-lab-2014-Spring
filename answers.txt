@@ -62,3 +62,18 @@ Yes,we can.It is the same as above.
   >>
   The attacker can let the program stop running. We can replace
   'sprintf' with 'snprintf' to fix it.
+
+  Physical Path Revealed:
+  When we request a non-exist file, we can know the physical path on
+  the server, which the attackers can use to do further hack.The
+  exploit code is 'exploit-5b.py'.
+  We can only get the physical path, and it works beacuse the server
+  reveal its physical path. We can fix by replace physical path with
+  fake path.
+  >>
+   void http_serve_none(int fd, const char *pn)
+   {
+    http_err(fd, 404, "File does not exist: %s", pn);//pn replace with
+                                                     //fake path.
+   }
+  >>
