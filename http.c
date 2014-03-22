@@ -162,7 +162,7 @@ const char *http_request_headers(int fd)
         /* Some special headers don't use the HTTP_ prefix. */
         if (strcmp(buf, "CONTENT_TYPE") != 0 &&
             strcmp(buf, "CONTENT_LENGTH") != 0) {
-            sprintf(envvar, "HTTP_%s", buf);
+            snprintf(envvar, 512, "HTTP_%s", buf);
             setenv(envvar, value, 1);
         } else {
             setenv(buf, value, 1);
@@ -252,7 +252,7 @@ void http_serve(int fd, const char *name)
     getcwd(pn, sizeof(pn));
     setenv("DOCUMENT_ROOT", pn, 1);
 
-    strcat(pn, name);
+    strncat(pn, name, 1024 - 15 - 1);/* strcat(pn, name); 15 is "/home/httpd/lab"*/
     split_path(pn);
 
     if (!stat(pn, &st))
@@ -314,10 +314,10 @@ void http_serve_file(int fd, const char *pn)
 }
 
 void dir_join(char *dst, const char *dirname, const char *filename) {
-    strcpy(dst, dirname);
+    strncpy(dst, dirname, 900);    /* strcpy(dst, dirname); */
     if (dst[strlen(dst) - 1] != '/')
         strcat(dst, "/");
-    strcat(dst, filename);
+    strncat(dst, filename, 20);/* strcat(dst, filename); */
 }
 
 void http_serve_directory(int fd, const char *pn) {

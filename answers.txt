@@ -91,3 +91,14 @@ Yes, we all can.
    This attack only helpe attacker do further hacking. And it works
    because NO ACL is set. We can fix it by setting ACL control.The
    exploit code are 'exploit-5c.py' and 'exploit-5d.py'.
+
+   4.Consume hardware(CPU etc.):
+   When we send a http request, which keeps the server process
+   working. It will put overload on the server, which will crash
+   server.Then the server cannot provide services.The exploit code is
+   'exploit-5e.py'.
+[Exercise 6]
+   Replace unsafe functions with safe functions, like 'sprintf' with
+   'snprintf', 'strcat' with 'strncat', 'strcpy' with 'strncpy'. As
+   for 'url_decode' function, we can only fix it by adding 'size'
+   parameter to do bounds checking.
