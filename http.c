@@ -101,6 +101,8 @@ const char *http_request_line(int fd, char *reqpath, char *env, size_t *env_len)
         envp += sprintf(envp, "QUERY_STRING=%s", qp + 1) + 1;
     }
 
+    sp1[2047] = '\0';       // limit sp1, though sp1[2048] = '\0'
+                            // should fine.
     /* decode URL escape sequences in the requested path into reqpath */
     url_decode(reqpath, sp1);
 
@@ -154,7 +156,8 @@ const char *http_request_headers(int fd)
             if (buf[i] == '-')
                 buf[i] = '_';
         }
-
+        
+        sp[511] = '\0';  // limit sp, though sp[512] = '\0' should be fine.
         /* Decode URL escape sequences in the value */
         url_decode(value, sp);
 
