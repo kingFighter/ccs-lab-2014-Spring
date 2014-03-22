@@ -32,6 +32,10 @@ overwrite return address to 'unlink' and the parameters can be put in
 'envvar' variable, too.
   [http.c:317]:
 Yes,we can.It is the same as above.
+  [http.c:320]:
+Yes,we can.It is the same as above.
+
+Yes, we all can.
 [Exercise 5]
   [http.c:255](function 'http_serve')
   Here is a code snippet 'strcat(pn, name)' in function 'http_serve',
