@@ -24,7 +24,7 @@ bytes.
     ....
     ....
     sprintf(envvar, "HTTP_%s", buf);
-
+See exploit code 'exploit-1a.py'.
 [http.c:255]
 The 'pn' variable can be overwritten by function 'strcat'('name' variable) because
 'strcat' is unsafe. and 'pn' is only 1024 bytes, but 'name' variable
@@ -39,16 +39,40 @@ void http_serve(int fd, const char *name)
 'zookfs.c:40'
 http_serve(sockfd, getenv("REQUEST_URI"));
 
+See exploit code 'exploit-2b.py'.
 [http.c:317]
 The 'dst' variable can be overwritten by function 'strcpy'('dirname'
-variable) and 'strcat'('filename' variable) beacuse 'strcpy' and
-'strcat' is unsafe. In function 'http_serve_directory' will call
-'dir_join', 'dst' variable is only 1024 bytes, but the 'dirname' and
- 'filename' can be larger.
+variable) beacuse 'strcpy' is unsafe. In function
+'http_serve_directory' will call 'dir_join', 'dst' variable is only
+1024 bytes, but the 'dirname' can be larger.
+
+void dir_join(char *dst, const char *dirname, const char *filename) {
+    ...
+    strcpy(dst, dirname);
+    ...
+
+'http.c:331,333'
+void http_serve_directory(int fd, const char *pn) {
+...
+char name[1024];
+dir_join(name, pn, indices[i]);
+...
+dir_join(name, getenv("SCRIPT_NAME"), indices[i]);
+...
+
+See exploit code 'exploit-1b.py'.
+[http.c:320]
+The 'dst' variable can be overwritten by function 'strcat'('filename'
+variable) beacuse 'strcat' is unsafe. In function
+'http_serve_directory' will call 'dir_join', 'dst' variable is only
+1024 bytes, though 'filename' is  among {"index.html", "index.php",
+"index.cgi", NULL}", but after 'strcpy(dst, dirname)' the 'dst' can be
+close to 1024 bytes, and then 'dist' will be out of bound after
+calling 'strcat(dst, filename)'.
 
 void dir_join(char *dst, const char *dirname, const char *filename) {
     strcpy(dst, dirname);
-    ...
+        ...
     strcat(dst, filename);
 
 'http.c:331,333'
@@ -59,6 +83,7 @@ dir_join(name, pn, indices[i]);
 ...
 dir_join(name, getenv("SCRIPT_NAME"), indices[i]);
 ...
+See exploit code 'exploit1c.py'.
 [http.c:421]
 In function 'url_decode', the 'dst' variable can be overwritten by
 'src' variable because 'dst' can be smaller than 'src' when other
@@ -93,7 +118,8 @@ static void process_client(int fd)
     if ((errmsg = http_request_line(fd, reqpath, env, &env_len)))
     ...
 
-*no how, and is not enough*
+See exploit code 'exploit-2a.py'
+
 
 Stack canaries, named for their analogy to a canary in a coal mine,
 are used to detect a stack buffer overflow before execution of
@@ -103,3 +129,9 @@ memory just before the stack return pointer.
 
 This technique can greatly increase the difficulty of exploiting a
 stack buffer overflow. But it still cannot prevent the vulnerability.
+
+And if we only use buffer overflows to corrupt the local variable in
+stack. According to the 'Stack canaries' definition(the 'canaries' is
+placed in memory before the stack return address), it won't help.
+
+In sum, stack canaries is not enough but can increase the difficulty.
