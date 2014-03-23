@@ -30,7 +30,7 @@ void http_serve_directory(int fd, const char *);
 void http_serve_executable(int fd, const char *);
 
 /** URL decoder. */
-void url_decode(char *dst, const char *src);
+void url_decode(char *dst, const char *src, size_t len);
 
 /** Unpack and set environmental strings. */
 void env_deserialize(const char *env, size_t len);

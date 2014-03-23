@@ -100,6 +100,5 @@ Yes, we all can.
 [Exercise 6]
    Replace unsafe functions with safe functions, like 'sprintf' with
    'snprintf', 'strcat' with 'strncat', 'strcpy' with 'strncpy'. As
-   for 'url_decode' function, we can only fix it by adding 'size'
-   parameter to do bounds checking or limiting the second parameter's
-   size by placing NULL.
+   for 'url_decode' function, we can only fix it by adding 'len'
+   parameter to do bounds checking.

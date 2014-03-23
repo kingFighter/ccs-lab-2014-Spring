@@ -101,10 +101,8 @@ const char *http_request_line(int fd, char *reqpath, char *env, size_t *env_len)
         envp += sprintf(envp, "QUERY_STRING=%s", qp + 1) + 1;
     }
 
-    sp1[2047] = '\0';       // limit sp1, though sp1[2048] = '\0'
-                            // should fine.
     /* decode URL escape sequences in the requested path into reqpath */
-    url_decode(reqpath, sp1);
+    url_decode(reqpath, sp1, 2048);
 
     envp += sprintf(envp, "REQUEST_URI=%s", reqpath) + 1;
 
@@ -157,9 +155,8 @@ const char *http_request_headers(int fd)
                 buf[i] = '_';
         }
         
-        sp[511] = '\0';  // limit sp, though sp[512] = '\0' should be fine.
         /* Decode URL escape sequences in the value */
-        url_decode(value, sp);
+        url_decode(value, sp, 512);
 
         /* Store header in env. variable for application code */
         /* Some special headers don't use the HTTP_ prefix. */
@@ -410,10 +407,17 @@ void http_serve_executable(int fd, const char *pn)
     }
 }
 
-void url_decode(char *dst, const char *src)
+void url_decode(char *dst, const char *src, size_t len)
 {
+    size_t count = 0;
     for (;;)
     {
+        if (count >= len - 1)
+        {
+          *dst = '\0';
+          break;
+        }
+
         if (src[0] == '%' && src[1] && src[2])
         {
             char hexbuf[3];
@@ -422,16 +426,19 @@ void url_decode(char *dst, const char *src)
             hexbuf[2] = '\0';
 
             *dst = strtol(&hexbuf[0], 0, 16);
+            count++;
             src += 3;
         }
         else if (src[0] == '+')
         {
             *dst = ' ';
+            count++;
             src++;
         }
         else
         {
             *dst = *src;
+            count++;
             src++;
 
             if (*dst == '\0')
