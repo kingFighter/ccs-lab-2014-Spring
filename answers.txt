@@ -1,1 +1,104 @@
 ## Place your answers here.
+[Exercise 2]
+exploit-2a.py:
+trigger bugs on [http.c:421](bugs.txt) with the function 'url_decode'
+>>
+req 'localhost:........HACK' will be stored in variable
+value'(512 bytes) with function 'url_decode'. And 'value' will be out
+of bound, which corrupt return address of function 'http_request_headers'.
+>>
+
+exploit-2b.py:
+trigger bugs on[http.c:255](bugs.txt) with the function 'strcat' ('pn'
+variable).
+>>
+req "GET /HACKHACKHACK.....HACK" will be stored in variable 'pn'(1024
+bytes) with function 'strcat'.And 'pn' will be out of bound, which
+corrupt function pointer 'handler'.
+>>
+[Exercise 3]
+The other buffer overflow in Exercise 1 can be exploited in this
+manner.
+
+We can overflow 'value' to corrupt return address of function
+'http_request_headers', and the return address will be modified with
+address of local variable 'value' in the stack. And the content of
+'value' will be our shell code.We can jump to that address and execute
+it as what We have done in Exercise 3.
+[Exercise 4]
+  [http.c:165]:
+Yes,we can.It is obvious,'envvar' variable can be overflowed to
+overwrite return address to 'unlink' and the parameters can be put in
+'envvar' variable, too.
+  [http.c:317]:
+Yes,we can.It is the same as above.
+  [http.c:320]:
+Yes,we can.It is the same as above.
+
+Yes, we all can.
+[Exercise 5]
+  1.[http.c:255](function 'http_serve')
+  Here is a code snippet 'strcat(pn, name)' in function 'http_serve',
+  normally both parameters cannot be NULL. We can hack the name to be
+  NULL, which will cause the program to have segment fault. The
+  exploit code is 'exploit-5a.py'. Here is the way:
+  In [zookfs.c:40] will call this function 'http_serve' with
+  parameters 'sockfd' and "getenv('REQUEST_URI')". We want
+  "getenv('REQUEST_URI')" NULL. Then we cannot setenv("REQUEST_URI").
+  In function 'env_deserialize(const char *env, size_t len)' will set
+  environment variables.
+  We find a code snippet:
+  >>
+   char *p = strchr(env, '=');
+   if (p == 0 || p - env > len)
+            break;
+  >>
+  When p - env > len, it stops set enviroment variables.And the 'len'
+  is the size of 'env'.So we just put more than 'len' characters on
+  'env', which will put 'REQUEST_URI' behind. Thus, so the information
+  of 'REQUEST_URI' is still there, but the enviroment variables won't
+  be set.We will use 'sprintf' to put more than 'len' characters on
+  'env':
+  [http.c:95](function 'http_request_line')
+  >>
+  envp += sprintf(envp, "REQUEST_METHOD=%s", buf) + 1;
+  envp += sprintf(envp, "SERVER_PROTOCOL=%s", sp2) + 1;
+  >>
+  The attacker can let the program stop running. We can replace
+  'sprintf' with 'snprintf' or limit the http request size to fix it.
+
+  2.Physical Path Revealed:
+  When we request a non-exist file, we can know the physical path on
+  the server, which the attackers can use to do further hack.The
+  exploit code is 'exploit-5b.py'.
+  We can only get the physical path, and it works because the server
+  reveal its physical path. We can fix by replace physical path with
+  fake path.
+  >>
+   void http_serve_none(int fd, const char *pn)
+   {
+    http_err(fd, 404, "File does not exist: %s", pn);//pn replace with
+                                                     //fake path.
+   }
+  >>
+
+   3.Get files on server(NO ACL):
+   When we request a file,if it exists then we get it.It means the
+   attackers can get enough information on server, such as auth.py.
+   After reading those information, attackers can know how the scripts
+   on server works. And then he can get the administrator account or
+   other privacies.
+   This attack only helpe attacker do further hacking. And it works
+   because NO ACL is set. We can fix it by setting ACL control.The
+   exploit code are 'exploit-5c.py' and 'exploit-5d.py'.
+
+   4.Consume hardware(CPU etc.):
+   When we send a http request, which keeps the server process
+   working. It will put overload on the server, which will crash
+   server.Then the server cannot provide services.The exploit code is
+   'exploit-5e.py'.
+[Exercise 6]
+   Replace unsafe functions with safe functions, like 'sprintf' with
+   'snprintf', 'strcat' with 'strncat', 'strcpy' with 'strncpy'. As
+   for 'url_decode' function, we can only fix it by adding 'len'
+   parameter to do bounds checking.
