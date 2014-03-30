@@ -11,7 +11,8 @@ def transfer(sender, recipient, zoobars):
     sender_balance = senderp.zoobars - zoobars
     recipient_balance = recipientp.zoobars + zoobars
 
-    if sender_balance < 0 or recipient_balance < 0:
+    # zoobars cannot be negative
+    if sender_balance < 0 or recipient_balance < 0 or zoobars < 0:
         raise ValueError()
         
     # sender and recipient is the same
