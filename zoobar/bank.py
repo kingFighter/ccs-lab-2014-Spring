@@ -8,6 +8,13 @@ def transfer(sender, recipient, zoobars):
     senderp = persondb.query(Person).get(sender)
     recipientp = persondb.query(Person).get(recipient)
 
+    # I am not sure if zoobars must be integer.
+    if type(zoobars) == type(1.2):
+        zoobars = int(zoobars)
+    
+    if type(zoobars) != type(1):
+        raise ValueError()
+
     sender_balance = senderp.zoobars - zoobars
     recipient_balance = recipientp.zoobars + zoobars
 
