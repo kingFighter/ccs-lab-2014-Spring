@@ -176,6 +176,10 @@ pid_t launch_svc(CONF *conf, const char *name)
         perror("chdir");
         return 1;
       }
+
+      setresuid(uid, uid, uid);
+      setresgid(gid, gid, gid);  
+      setgroups(ngids, gids);  
     }
 
     signal(SIGCHLD, SIG_DFL);
