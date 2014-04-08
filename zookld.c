@@ -177,8 +177,8 @@ pid_t launch_svc(CONF *conf, const char *name)
         return 1;
       }
 
-      setresuid(uid, uid, uid);
       setresgid(gid, gid, gid);  
+      setresuid(uid, uid, uid);
       setgroups(ngids, gids);  
     }
 
