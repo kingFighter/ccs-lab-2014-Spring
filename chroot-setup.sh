@@ -86,3 +86,4 @@ chmod 660 /jail/zoobar/db/transfer/transfer.db
 chown 61012:61012 /jail/zoobar/db/transfer/transfer.db
 chmod 660 /jail/zoobar/db/person/person.db
 
+chown 61014:61014 /jail/zoobar/index.cgi
