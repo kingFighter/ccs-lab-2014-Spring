@@ -7,12 +7,20 @@ import auth
 import bank
 import random
 
+import rpclib
+
+sockname = "/authavc/sock"
+c = rpclib.client_connect(sockname)
+
 class User(object):
     def __init__(self):
         self.person = None
 
     def checkLogin(self, username, password):
-        token = auth.login(username, password)
+        kwargs = {}
+        kwargs['username'] = username
+        kwargs['password'] = password
+        token = c.call('login', **kwargs)
         if token is not None:
             return self.loginCookie(username, token)
         else:
@@ -26,7 +34,11 @@ class User(object):
         self.person = None
 
     def addRegistration(self, username, password):
-        token = auth.register(username, password)
+        kwargs = {}
+        kwargs['username'] = username
+        kwargs['password'] = password
+        token = c.call('register', **kwargs)
+
         if token is not None:
             return self.loginCookie(username, token)
         else:
@@ -36,7 +48,10 @@ class User(object):
         if not cookie:
             return
         (username, token) = cookie.rsplit("#", 1)
-        if auth.check_token(username, token):
+        kwargs = {}
+        kwargs['username'] = username
+        kwargs['token'] = token
+        if c.call('check_token', **kwargs):
             self.setPerson(username, token)
 
     def setPerson(self, username, token):
