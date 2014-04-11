@@ -75,15 +75,20 @@ rm -rf /jail/zoobar/db
 
 python /jail/zoobar/zoodb.py init-person
 python /jail/zoobar/zoodb.py init-transfer
+python /jail/zoobar/zoodb.py init-cred
 
 chown 61012:61012 /jail/zoobar/db/person/
 chmod 750 /jail/zoobar/db/person
+chown 61012:61012 /jail/zoobar/db/cred/
+chmod 750 /jail/zoobar/db/cred/
 chown 61012:61012 /jail/zoobar/db/transfer/
 chmod 750 /jail/zoobar/db/transfer
 
 chown 61012:61012 /jail/zoobar/db/person/person.db
-chmod 660 /jail/zoobar/db/transfer/transfer.db
-chown 61012:61012 /jail/zoobar/db/transfer/transfer.db
 chmod 660 /jail/zoobar/db/person/person.db
+chown 61012:61012 /jail/zoobar/db/cred/cred.db
+chmod 660 /jail/zoobar/db/cred/cred.db
+chown 61012:61012 /jail/zoobar/db/transfer/transfer.db
+chmod 660 /jail/zoobar/db/transfer/transfer.db
 
 chown 61014:61014 /jail/zoobar/index.cgi
