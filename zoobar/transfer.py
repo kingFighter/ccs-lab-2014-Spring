@@ -3,13 +3,10 @@ from flask import g, render_template, request
 from login import requirelogin
 from zoodb import *
 from debug import *
-import bank
+import bank_client
 import traceback
 import rpclib
 from pbkdf2 import crypt
-
-sockname = "/banksvc/sock"
-c = rpclib.client_connect(sockname)
 
 @catch_err
 @requirelogin
@@ -18,12 +15,9 @@ def transfer():
     try:
         if 'recipient' in request.form:
             zoobars = eval(request.form['zoobars'])
-            kwargs = {}
-            kwargs['sender'] = g.user.person.username;
-            kwargs['recipient'] = request.form['recipient']
-            kwargs['zoobars'] = zoobars
-            kwargs['token'] = {g.user.token: crypt(g.user.token)}
-            c.call('transfer', **kwargs)
+            bank_client.transfer(g.user.person.username, request.form['recipient'], zoobars,
+                              {g.user.token: crypt(g.user.token)})   
+            
             warning = "Sent %d zoobars" % zoobars
     except (KeyError, ValueError, AttributeError, NameError) as e:
         traceback.print_exc()

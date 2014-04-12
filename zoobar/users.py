@@ -4,10 +4,7 @@ from login import requirelogin
 from zoodb import *
 from debug import *
 from profile import *
-import bank
-
-sockname = "/banksvc/sock"
-c = rpclib.client_connect(sockname)
+import bank_client
 
 @catch_err
 @requirelogin
@@ -25,14 +22,9 @@ def users():
 
             p_markup = Markup("<b>%s</b>" % p)
             args['profile'] = p_markup
-
             args['user'] = user
-            
-            kwargs = {}
-            kwargs['username'] = user.username
-            args['user_zoobars'] = c.call('balance', **kwargs)
-            args['transfers'] = c.call('get_log', **kwargs)
-            
+            args['user_zoobars'] = bank_client.balance(user.username)
+            args['transfers'] = bank_client.get_log(user.username)
         else:
             args['warning'] = "Cannot find that user."
     return render_template('users.html', **args)

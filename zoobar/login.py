@@ -4,14 +4,10 @@ from debug import *
 from zoodb import *
 
 import auth_client
-import bank
+import bank_client
 import random
 
 import rpclib
-
-
-sockname = "/banksvc/sock"
-cc = rpclib.client_connect(sockname)
 
 class User(object):
     def __init__(self):
@@ -35,9 +31,7 @@ class User(object):
         token = auth_client.register(username, password)
 
         if token is not None:
-            kwargs = {}
-            kwargs['username'] = username
-            cc.call('setup', **kwargs)
+            bank_client.setup(username)
             return self.loginCookie(username, token)
         else:
             return None
@@ -53,9 +47,7 @@ class User(object):
         persondb = person_setup()
         self.person = persondb.query(Person).get(username)
         self.token = token
-        kwargs = {}
-        kwargs['username'] = username
-        self.zoobars = cc.call('balance', **kwargs)
+        self.zoobars = bank_client.balance(username)
 
 def logged_in():
     g.user = User()
