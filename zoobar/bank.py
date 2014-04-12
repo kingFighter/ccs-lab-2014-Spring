@@ -13,7 +13,7 @@ def transfer(sender, recipient, zoobars):
         zoobars = int(zoobars)
     
     if type(zoobars) != type(1):
-        raise ValueError()
+        return
 
     bankdb = bank_setup()
     sender_bank = bankdb.query(Bank).get(sender)
@@ -23,7 +23,7 @@ def transfer(sender, recipient, zoobars):
 
     # zoobars cannot be negative
     if sender_balance < 0 or recipient_balance < 0 or zoobars < 0:
-        raise ValueError()
+        return
         
     # sender and recipient is the same
     if senderp == recipientp:

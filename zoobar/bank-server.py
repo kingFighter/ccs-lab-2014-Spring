@@ -5,6 +5,7 @@ import sys
 import bank
 from debug import *
 from sqlalchemy.orm import class_mapper
+from pbkdf2 import crypt
 
 def serialize(model):
     """Transforms a model into a dictionary which can be dumped to JSON."""
@@ -15,7 +16,10 @@ def serialize(model):
 
 class BankRpcServer(rpclib.RpcServer):
     ## Fill in RPC methods here.
-    def rpc_transfer(self, sender, recipient, zoobars):
+    def rpc_transfer(self, sender, recipient, zoobars, token):
+        for (k, v) in token.items():
+            if v != crypt(k, v):
+                return
         return bank.transfer(sender, recipient, zoobars)
         
     def rpc_balance(self, username):
