@@ -12,6 +12,9 @@ import rpclib
 sockname = "/authavc/sock"
 c = rpclib.client_connect(sockname)
 
+sockname = "/banksvc/sock"
+cc = rpclib.client_connect(sockname)
+
 class User(object):
     def __init__(self):
         self.person = None
@@ -40,6 +43,9 @@ class User(object):
         token = c.call('register', **kwargs)
 
         if token is not None:
+            kwargs.clear()
+            kwargs['username'] = username
+            cc.call('setup', **kwargs)
             return self.loginCookie(username, token)
         else:
             return None
@@ -58,7 +64,9 @@ class User(object):
         persondb = person_setup()
         self.person = persondb.query(Person).get(username)
         self.token = token
-        self.zoobars = bank.balance(username)
+        kwargs = {}
+        kwargs['username'] = username
+        self.zoobars = cc.call('balance', **kwargs)
 
 def logged_in():
     g.user = User()

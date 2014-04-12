@@ -64,6 +64,7 @@ cp -r /usr/share/zoneinfo/America /jail/usr/share/zoneinfo/
 
 create_socket_dir /jail/echosvc 61010:61010 755
 create_socket_dir /jail/authavc 61015:61015 755
+create_socket_dir /jail/banksvc 61016:61016 755
 
 mkdir -p /jail/tmp
 chmod a+rwxt /jail/tmp
@@ -85,8 +86,8 @@ chown 61015:61015 /jail/zoobar/db/cred/
 chmod 700 /jail/zoobar/db/cred/
 chown 61012:61012 /jail/zoobar/db/transfer/
 chmod 770 /jail/zoobar/db/transfer
-chown 61012:61012 /jail/zoobar/db/bank/
-chmod 770 /jail/zoobar/db/bank
+chown 61016:61016 /jail/zoobar/db/bank/
+chmod 700 /jail/zoobar/db/bank
 
 chown 61012:61012 /jail/zoobar/db/person/person.db
 chmod 660 /jail/zoobar/db/person/person.db
@@ -94,7 +95,7 @@ chown 61015:61015 /jail/zoobar/db/cred/cred.db
 chmod 600 /jail/zoobar/db/cred/cred.db
 chown 61012:61012 /jail/zoobar/db/transfer/transfer.db
 chmod 660 /jail/zoobar/db/transfer/transfer.db
-chown 61012:61012 /jail/zoobar/db/bank/bank.db
-chmod 660 /jail/zoobar/db/bank/bank.db
+chown 61016:61016 /jail/zoobar/db/bank/bank.db
+chmod 600 /jail/zoobar/db/bank/bank.db
 
 chown 61014:61014 /jail/zoobar/index.cgi

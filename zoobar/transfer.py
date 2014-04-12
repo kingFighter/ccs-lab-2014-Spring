@@ -5,6 +5,10 @@ from zoodb import *
 from debug import *
 import bank
 import traceback
+import rpclib
+
+sockname = "/banksvc/sock"
+c = rpclib.client_connect(sockname)
 
 @catch_err
 @requirelogin
@@ -13,8 +17,11 @@ def transfer():
     try:
         if 'recipient' in request.form:
             zoobars = eval(request.form['zoobars'])
-            bank.transfer(g.user.person.username,
-                          request.form['recipient'], zoobars)
+            kwargs = {}
+            kwargs['sender'] = g.user.person.username;
+            kwargs['recipient'] = request.form['recipient']
+            kwargs['zoobars'] = zoobars
+            c.call('transfer', **kwargs)
             warning = "Sent %d zoobars" % zoobars
     except (KeyError, ValueError, AttributeError) as e:
         traceback.print_exc()

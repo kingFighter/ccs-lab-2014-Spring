@@ -54,3 +54,9 @@ def get_log(username):
     return db.query(Transfer).filter(or_(Transfer.sender==username,
                                          Transfer.recipient==username))
 
+def setup(username):
+    bankdb = bank_setup()
+    newbank = Bank()
+    newbank.username = username
+    bankdb.add(newbank)
+    bankdb.commit()

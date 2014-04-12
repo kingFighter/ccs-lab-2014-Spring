@@ -6,6 +6,9 @@ from debug import *
 from profile import *
 import bank
 
+sockname = "/banksvc/sock"
+c = rpclib.client_connect(sockname)
+
 @catch_err
 @requirelogin
 def users():
@@ -24,8 +27,12 @@ def users():
             args['profile'] = p_markup
 
             args['user'] = user
-            args['user_zoobars'] = bank.balance(user.username)
-            args['transfers'] = bank.get_log(user.username)
+            
+            kwargs = {}
+            kwargs['username'] = user.username
+            args['user_zoobars'] = c.call('balance', **kwargs)
+            args['transfers'] = c.call('get_log', **kwargs)
+            
         else:
             args['warning'] = "Cannot find that user."
     return render_template('users.html', **args)

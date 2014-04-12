@@ -5,7 +5,7 @@ import hashlib
 import random
 from pbkdf2 import PBKDF2
 import os
-
+import rpclib
 
 def newtoken(db, cred):
     hashinput = "%s%.10f" % (cred.password, random.random())
@@ -33,18 +33,15 @@ def login(username, password):
 def register(username, password):
     persondb = person_setup()
     creddb = cred_setup()
-    bankdb = bank_setup()
     person = persondb.query(Person).get(username)
 
     if person:
         return None
-
+    
     newperson = Person()
     newcred = Cred()
-    newbank = Bank()
     newperson.username = username
     newcred.username = username
-    newbank.username = username
     salt = os.urandom(8)    # 64-bit salt
     newcred.salt = salt.encode('base-64')
     password = PBKDF2(password, newcred.salt, 2000).read(32) # 256-bit key
@@ -52,10 +49,8 @@ def register(username, password):
 
     persondb.add(newperson)
     creddb.add(newcred)
-    bankdb.add(newbank)
     persondb.commit()
     creddb.commit()
-    bankdb.commit()
 
     return newtoken(creddb, newcred)
 
