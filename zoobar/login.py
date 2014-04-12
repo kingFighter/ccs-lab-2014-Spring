@@ -3,14 +3,12 @@ from functools import wraps
 from debug import *
 from zoodb import *
 
-import auth
+import auth_client
 import bank
 import random
 
 import rpclib
 
-sockname = "/authavc/sock"
-c = rpclib.client_connect(sockname)
 
 sockname = "/banksvc/sock"
 cc = rpclib.client_connect(sockname)
@@ -20,10 +18,7 @@ class User(object):
         self.person = None
 
     def checkLogin(self, username, password):
-        kwargs = {}
-        kwargs['username'] = username
-        kwargs['password'] = password
-        token = c.call('login', **kwargs)
+        token = auth_client.login(username, password)
         if token is not None:
             return self.loginCookie(username, token)
         else:
@@ -37,13 +32,10 @@ class User(object):
         self.person = None
 
     def addRegistration(self, username, password):
-        kwargs = {}
-        kwargs['username'] = username
-        kwargs['password'] = password
-        token = c.call('register', **kwargs)
+        token = auth_client.register(username, password)
 
         if token is not None:
-            kwargs.clear()
+            kwargs = {}
             kwargs['username'] = username
             cc.call('setup', **kwargs)
             return self.loginCookie(username, token)
@@ -54,10 +46,7 @@ class User(object):
         if not cookie:
             return
         (username, token) = cookie.rsplit("#", 1)
-        kwargs = {}
-        kwargs['username'] = username
-        kwargs['token'] = token
-        if c.call('check_token', **kwargs):
+        if auth_client.check_token(username, token):
             self.setPerson(username, token)
 
     def setPerson(self, username, token):
