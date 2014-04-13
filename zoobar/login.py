@@ -5,6 +5,7 @@ from zoodb import *
 
 import auth_client
 import bank_client
+import honeychecker_client
 import random
 
 import rpclib
@@ -14,10 +15,30 @@ class User(object):
         self.person = None
 
     def checkLogin(self, username, password):
+        # token[0]:token token[1]:index
         token = auth_client.login(username, password)
         if token is not None:
-            return self.loginCookie(username, token)
+            ret = honeychecker_client.check(username, token[1])
+            if ret == 0:            # correct
+                return self.loginCookie(username, token[0])
+            elif ret == 2:
+                '''
+                honeywords, proceed by policy such as:
+                1. setting o an alarm or notifying a system administrator,
+                2. letting login proceed as usual,
+                3. letting the login proceed, but on a honeypot system,
+                4. tracing the source of the login carefully,
+                5. turning on additional logging of the user's activities,
+                6. shutting down that user's account until the user establishes a new password
+                (e.g. by meeting with the sysadmin),
+                7. shutting down the computer system and requiring
+                all users to establish new passwords.
+
+                Here we simply deny and log
+                '''
+                return None
         else:
+            honeychecker_client.check(username, 0)
             return None
 
     def loginCookie(self, username, token):
@@ -28,11 +49,13 @@ class User(object):
         self.person = None
 
     def addRegistration(self, username, password):
+        # token[0]:token token[1]:index
         token = auth_client.register(username, password)
 
         if token is not None:
             bank_client.setup(username)
-            return self.loginCookie(username, token)
+            honeychecker_client.set(username, token[1])
+            return self.loginCookie(username, token[0])
         else:
             return None
 

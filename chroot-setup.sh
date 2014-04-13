@@ -65,6 +65,7 @@ cp -r /usr/share/zoneinfo/America /jail/usr/share/zoneinfo/
 create_socket_dir /jail/echosvc 61010:61010 755
 create_socket_dir /jail/authavc 61015:61015 755
 create_socket_dir /jail/banksvc 61016:61016 755
+create_socket_dir /jail/honeycheckersvc 61017:61017 755
 
 mkdir -p /jail/tmp
 chmod a+rwxt /jail/tmp
@@ -79,9 +80,12 @@ python /jail/zoobar/zoodb.py init-person
 python /jail/zoobar/zoodb.py init-transfer
 python /jail/zoobar/zoodb.py init-cred
 python /jail/zoobar/zoodb.py init-bank
+python /jail/zoobar/zoodb.py init-honeychecker
 
 chown 61012:61012 /jail/zoobar/db/person/
 chmod 770 /jail/zoobar/db/person
+chown 61017:61017 /jail/zoobar/db/honeychecker/
+chmod 770 /jail/zoobar/db/honeychecker
 chown 61015:61015 /jail/zoobar/db/cred/
 chmod 700 /jail/zoobar/db/cred/
 chown 61012:61012 /jail/zoobar/db/transfer/
@@ -91,6 +95,8 @@ chmod 700 /jail/zoobar/db/bank
 
 chown 61012:61012 /jail/zoobar/db/person/person.db
 chmod 660 /jail/zoobar/db/person/person.db
+chown 61017:61017 /jail/zoobar/db/honeychecker/honeychecker.db
+chmod 600 /jail/zoobar/db/honeychecker/honeychecker.db
 chown 61015:61015 /jail/zoobar/db/cred/cred.db
 chmod 600 /jail/zoobar/db/cred/cred.db
 chown 61012:61012 /jail/zoobar/db/transfer/transfer.db

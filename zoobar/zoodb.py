@@ -8,17 +8,64 @@ PersonBase = declarative_base()
 CredBase = declarative_base()
 TransferBase = declarative_base()
 BankBase = declarative_base()
+HoneycheckerBase = declarative_base()
 
 class Person(PersonBase):
     __tablename__ = "person"
     username = Column(String(128), primary_key=True)
     profile = Column(String(5000), nullable=False, default="")
 
+class Honeychecker(HoneycheckerBase):
+    __tablename__ = "honeychecker"
+    username = Column(String(128), primary_key=True)
+    index = Column(Integer)
+
 class Cred(CredBase):
     __tablename__ = "cred"
     username = Column(String(128), primary_key=True)
-    password = Column(String(128))
-    salt = Column(String(128))
+    # I don't know how to store arrays
+    password0 = Column(String(128))
+    salt0 = Column(String(128))
+    password1 = Column(String(128))
+    salt1 = Column(String(128))
+    password2 = Column(String(128))
+    salt2 = Column(String(128))
+    password3 = Column(String(128))
+    salt3 = Column(String(128))
+    password4 = Column(String(128))
+    salt4 = Column(String(128))
+    password5 = Column(String(128))
+    salt5 = Column(String(128))
+    password6 = Column(String(128))
+    salt6 = Column(String(128))
+    password7 = Column(String(128))
+    salt7 = Column(String(128))
+    password8 = Column(String(128))
+    salt8 = Column(String(128))
+    password9 = Column(String(128))
+    salt9 = Column(String(128))
+    password10 = Column(String(128))
+    salt10 = Column(String(128))
+    password11 = Column(String(128))
+    salt11 = Column(String(128))
+    password12 = Column(String(128))
+    salt12 = Column(String(128))
+    password13 = Column(String(128))
+    salt13 = Column(String(128))
+    password14 = Column(String(128))
+    salt14 = Column(String(128))
+    password15 = Column(String(128))
+    salt15 = Column(String(128))
+    password16 = Column(String(128))
+    salt16 = Column(String(128))
+    password17 = Column(String(128))
+    salt17 = Column(String(128))
+    password18 = Column(String(128))
+    salt18 = Column(String(128))
+    password19 = Column(String(128))
+    salt19 = Column(String(128))
+    password20 = Column(String(128))
+    salt20 = Column(String(128))
     token = Column(String(128))
 
 class Transfer(TransferBase):
@@ -58,10 +105,13 @@ def transfer_setup():
 def bank_setup():
     return dbsetup("bank", BankBase)
 
+def honeychecker_setup():
+    return dbsetup("honeychecker", HoneycheckerBase)
+
 import sys
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s [init-person|init-transfer|init-cred|init-bank]" % sys.argv[0]
+        print "Usage: %s [init-person|init-transfer|init-cred|init-bank|init-honeychecker]" % sys.argv[0]
         exit(1)
 
     cmd = sys.argv[1]
@@ -73,5 +123,7 @@ if __name__ == "__main__":
         transfer_setup()
     elif cmd == 'init-bank':
         bank_setup()
+    elif cmd == 'init-honeychecker':
+        honeychecker_setup()
     else:
         raise Exception("unknown command %s" % cmd)

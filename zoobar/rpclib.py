@@ -4,6 +4,7 @@ import socket
 import stat
 import errno
 import json
+import time
 from debug import *
 
 def parse_req(req):
@@ -101,6 +102,12 @@ class RpcClient(object):
 
 def client_connect(pathname):
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    log(pathname)
+    log(os.path.exists(pathname))
+    while not os.path.exists(pathname): # wait program to create sock
+        time.sleep(0.5)
+    log(pathname)
+    log(os.path.exists(pathname))
     sock.connect(pathname)
     return RpcClient(sock)
 

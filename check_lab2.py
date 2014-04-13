@@ -67,7 +67,7 @@ def check_root():
         log_exit("must run %s as root" % sys.argv[0])
 
 def killall():
-    sh("killall zookld zookd zookfs echo-server.py auth-server.py bank-server.py profile-server.py >/dev/null 2>&1", exit_onerr=False)
+    sh("killall zookld zookd zookfs echo-server.py auth-server.py bank-server.py profile-server.py honeychecker-server.py >/dev/null 2>&1", exit_onerr=False)
 
 def setup():
     log("+ setting up environment in fresh /jail..")
