@@ -66,6 +66,7 @@ create_socket_dir /jail/echosvc 61010:61010 755
 create_socket_dir /jail/authavc 61015:61015 755
 create_socket_dir /jail/banksvc 61016:61016 755
 create_socket_dir /jail/honeycheckersvc 61017:61017 755
+create_socket_dir /jail/profilesvc 61018:61018 755
 
 mkdir -p /jail/tmp
 chmod a+rwxt /jail/tmp
