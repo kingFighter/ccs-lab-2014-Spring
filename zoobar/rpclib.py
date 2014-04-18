@@ -3,28 +3,30 @@ import sys
 import socket
 import stat
 import errno
+import json
+import time
 from debug import *
 
 def parse_req(req):
-    words = req.split(' ')
-    method = words[0]
-    args = words[1:]
+    words = json.loads(req)
+    
+    for (method, args) in words.items():
+        pass
     kwargs = {}
-    for arg in words[1:]:
-        (name, _, val) = arg.partition('=')
-        kwargs[unicode(name)] = unicode(val)
+    for (name, val) in args.items():
+        kwargs[unicode(name)] = val
     return (method, kwargs)
 
 def format_req(method, kwargs):
-    return '%s %s' % (method,
-                      ' '.join(['%s=%s' % (k, v)
-                                for (k, v) in kwargs.items()]))
+    rep = {}
+    rep[method] = kwargs
+    return json.dumps(rep)
 
 def parse_resp(resp):
-    return resp
+    return json.loads(resp)
 
 def format_resp(resp):
-    return resp
+    return json.dumps(resp)
 
 def buffered_readlines(sock):
     buf = ''
@@ -100,6 +102,12 @@ class RpcClient(object):
 
 def client_connect(pathname):
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    log(pathname)
+    log(os.path.exists(pathname))
+    while not os.path.exists(pathname): # wait program to create sock
+        time.sleep(0.5)
+    log(pathname)
+    log(os.path.exists(pathname))
     sock.connect(pathname)
     return RpcClient(sock)
 

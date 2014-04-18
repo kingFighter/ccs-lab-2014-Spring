@@ -3,19 +3,42 @@ from functools import wraps
 from debug import *
 from zoodb import *
 
-import auth
-import bank
+import auth_client
+import bank_client
+import honeychecker_client
 import random
+
+import rpclib
 
 class User(object):
     def __init__(self):
         self.person = None
 
     def checkLogin(self, username, password):
-        token = auth.login(username, password)
+        # token[0]:token token[1]:index
+        token = auth_client.login(username, password)
         if token is not None:
-            return self.loginCookie(username, token)
+            ret = honeychecker_client.check(username, token[1])
+            if ret == 0:            # correct
+                return self.loginCookie(username, token[0])
+            elif ret == 2:
+                '''
+                honeywords, proceed by policy such as:
+                1. setting o an alarm or notifying a system administrator,
+                2. letting login proceed as usual,
+                3. letting the login proceed, but on a honeypot system,
+                4. tracing the source of the login carefully,
+                5. turning on additional logging of the user's activities,
+                6. shutting down that user's account until the user establishes a new password
+                (e.g. by meeting with the sysadmin),
+                7. shutting down the computer system and requiring
+                all users to establish new passwords.
+
+                Here we simply deny and log
+                '''
+                return None
         else:
+            honeychecker_client.check(username, 0)
             return None
 
     def loginCookie(self, username, token):
@@ -26,9 +49,13 @@ class User(object):
         self.person = None
 
     def addRegistration(self, username, password):
-        token = auth.register(username, password)
+        # token[0]:token token[1]:index
+        token = auth_client.register(username, password)
+
         if token is not None:
-            return self.loginCookie(username, token)
+            bank_client.setup(username)
+            honeychecker_client.set(username, token[1])
+            return self.loginCookie(username, token[0])
         else:
             return None
 
@@ -36,14 +63,14 @@ class User(object):
         if not cookie:
             return
         (username, token) = cookie.rsplit("#", 1)
-        if auth.check_token(username, token):
+        if auth_client.check_token(username, token):
             self.setPerson(username, token)
 
     def setPerson(self, username, token):
         persondb = person_setup()
         self.person = persondb.query(Person).get(username)
         self.token = token
-        self.zoobars = bank.balance(username)
+        self.zoobars = bank_client.balance(username)
 
 def logged_in():
     g.user = User()

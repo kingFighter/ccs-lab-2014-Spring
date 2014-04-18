@@ -8,15 +8,31 @@ def transfer(sender, recipient, zoobars):
     senderp = persondb.query(Person).get(sender)
     recipientp = persondb.query(Person).get(recipient)
 
-    sender_balance = senderp.zoobars - zoobars
-    recipient_balance = recipientp.zoobars + zoobars
+    # I am not sure if zoobars must be integer.
+    if type(zoobars) == type(1.2):
+        zoobars = int(zoobars)
+    
+    if type(zoobars) != type(1):
+        return
 
-    if sender_balance < 0 or recipient_balance < 0:
-        raise ValueError()
+    bankdb = bank_setup()
+    sender_bank = bankdb.query(Bank).get(sender)
+    recipient_bank = bankdb.query(Bank).get(recipient)
+    sender_balance = sender_bank.zoobars - zoobars
+    recipient_balance = recipient_bank.zoobars + zoobars
 
-    senderp.zoobars = sender_balance
-    recipientp.zoobars = recipient_balance
+    # zoobars cannot be negative
+    if sender_balance < 0 or recipient_balance < 0 or zoobars < 0:
+        return
+        
+    # sender and recipient is the same
+    if senderp == recipientp:
+        return
+
+    sender_bank.zoobars = sender_balance
+    recipient_bank.zoobars = recipient_balance
     persondb.commit()
+    bankdb.commit()
 
     transfer = Transfer()
     transfer.sender = sender
@@ -29,12 +45,18 @@ def transfer(sender, recipient, zoobars):
     transferdb.commit()
 
 def balance(username):
-    db = person_setup()
-    person = db.query(Person).get(username)
-    return person.zoobars
+    db = bank_setup()
+    bank = db.query(Bank).get(username)
+    return bank.zoobars
 
 def get_log(username):
     db = transfer_setup()
     return db.query(Transfer).filter(or_(Transfer.sender==username,
                                          Transfer.recipient==username))
 
+def setup(username):
+    bankdb = bank_setup()
+    newbank = Bank()
+    newbank.username = username
+    bankdb.add(newbank)
+    bankdb.commit()
