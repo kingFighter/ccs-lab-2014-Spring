@@ -8,6 +8,7 @@ import urllib
 import socket
 import bank
 import zoodb
+import glob
 
 from debug import *
 
@@ -19,6 +20,7 @@ class ProfileAPIServer(rpclib.RpcServer):
     def __init__(self, user, visitor):
         self.user = user
         self.visitor = visitor
+        os.chdir('/tmp')
         os.setgid(61012)
         os.setuid(61016)
 
@@ -51,6 +53,31 @@ class ProfileAPIServer(rpclib.RpcServer):
     def rpc_xfer(self, target, zoobars):
         bank.transfer(self.user, target, zoobars)
 
+    def rpc_send_msg(self, msg):
+        fn = '%s.%s' % (self.user, self.visitor)
+        try:
+            with open(fn, 'a') as f:
+                f.write(str(time.time()) + " " + msg + "\n")
+                f.close()
+        except IOError, e:
+            pass
+
+    def rpc_get_msg(self):
+        fns = glob.glob("*." + self.user)
+        wels = {}
+        
+        for fn in fns:
+            i = 0
+            content = []
+            with open(fn) as fp:
+                for line in fp:
+                    index = line.index(" ")
+                    content.append(['time' + str(i), line[:index]])
+                    content.append(['msg' + str(i), line[index + 1:]])
+                    i = i + 1
+            wels[fn.split(".")[0]] = content
+        return wels
+
 def run_profile(pcode, profile_api_client):
     globals = {'api': profile_api_client}
     exec pcode in globals
@@ -60,7 +87,12 @@ class ProfileServer(rpclib.RpcServer):
         uid = 61018
 
         userdir = '/tmp'
-
+        
+        # let user know we will ignore '/', and '.' will be replaced
+        # by '0'.
+        # user name 'test/.' is the same as 'test.0'
+        user = user.replace("/", "")
+        user = user.replace(".", "0")
         (sa, sb) = socket.socketpair(socket.AF_UNIX, socket.SOCK_STREAM, 0)
         pid = os.fork()
         if pid == 0:
@@ -73,8 +105,7 @@ class ProfileServer(rpclib.RpcServer):
         sb.close()
         os.waitpid(pid, 0)
         
-        format_user = user.replace("/", "0")
-        userdir = os.path.join(userdir, format_user)
+        userdir = os.path.join(userdir, user)
         if not os.path.exists(userdir):
             os.mkdir(userdir)
             os.chmod(userdir, 0777)
