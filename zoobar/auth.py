@@ -68,9 +68,10 @@ def register(username, password):
 
     persondb.add(newperson)
     creddb.add(newcred)
+
     persondb.commit()
     creddb.commit()
-
+    
     return (newtoken(creddb, newcred, index - 1), index)
 
 def check_token(username, token):

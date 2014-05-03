@@ -6,6 +6,7 @@ from zoodb import *
 import auth_client
 import bank_client
 import honeychecker_client
+import profilecharge_client
 import random
 
 import rpclib
@@ -54,6 +55,7 @@ class User(object):
 
         if token is not None:
             bank_client.setup(username)
+            profilecharge_client.setup(username)
             honeychecker_client.set(username, token[1])
             return self.loginCookie(username, token[0])
         else:

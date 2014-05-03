@@ -41,8 +41,8 @@ class ProfileAPIServer(rpclib.RpcServer):
         return xfers
 
     def rpc_get_user_info(self, username):
-        person_db = zoodb.person_setup()
-        p = person_db.query(zoodb.Person).get(username)
+        profile_db = zoodb.profile_setup()
+        p = profile_db.query(zoodb.Profile).get(username)
         if not p:
             return None
         return { 'username': p.username,
@@ -90,7 +90,7 @@ class ProfileServer(rpclib.RpcServer):
         
         # let user know we will ignore '/', and '.' will be replaced
         # by '0'.
-        # user name 'test/.' is the same as 'test.0'
+        # user name 'test/.' is the same as 'test0'
         user = user.replace("/", "")
         user = user.replace(".", "0")
         (sa, sb) = socket.socketpair(socket.AF_UNIX, socket.SOCK_STREAM, 0)

@@ -5,6 +5,7 @@ import os
 from debug import *
 
 PersonBase = declarative_base()
+ProfileBase = declarative_base()
 CredBase = declarative_base()
 TransferBase = declarative_base()
 BankBase = declarative_base()
@@ -12,6 +13,10 @@ HoneycheckerBase = declarative_base()
 
 class Person(PersonBase):
     __tablename__ = "person"
+    username = Column(String(128), primary_key=True)
+
+class Profile(ProfileBase):
+    __tablename__ = "profile"
     username = Column(String(128), primary_key=True)
     profile = Column(String(5000), nullable=False, default="")
 
@@ -96,6 +101,9 @@ def dbsetup(name, base):
 def person_setup():
     return dbsetup("person", PersonBase)
 
+def profile_setup():
+    return dbsetup("profile", ProfileBase)
+
 def cred_setup():
     return dbsetup("cred", CredBase)
 
@@ -111,7 +119,7 @@ def honeychecker_setup():
 import sys
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print "Usage: %s [init-person|init-transfer|init-cred|init-bank|init-honeychecker]" % sys.argv[0]
+        print "Usage: %s [init-person|init-transfer|init-cred|init-bank|init-honeychecker|init-profile]" % sys.argv[0]
         exit(1)
 
     cmd = sys.argv[1]
@@ -125,5 +133,7 @@ if __name__ == "__main__":
         bank_setup()
     elif cmd == 'init-honeychecker':
         honeychecker_setup()
+    elif cmd == 'init-profile':
+        profile_setup()
     else:
         raise Exception("unknown command %s" % cmd)

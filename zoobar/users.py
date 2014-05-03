@@ -4,6 +4,7 @@ from login import requirelogin
 from zoodb import *
 from debug import *
 from profile import *
+import profilecharge_client
 import bank_client
 
 @catch_err
@@ -14,11 +15,13 @@ def users():
     if 'user' in request.values:
         persondb = person_setup()
         user = persondb.query(Person).get(request.values['user'])
+        
+        pf = profilecharge_client.get(user.username)
         if user:
             transferdb = transfer_setup()
-            p = user.profile
+            p = pf.profile
             if p.startswith("#!python"):
-                p = run_profile(user)
+                p = run_profile(pf)
 
             p_markup = Markup("<b>%s</b>" % p)
             args['profile'] = p_markup
