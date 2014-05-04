@@ -83,15 +83,15 @@ python /jail/zoobar/zoodb.py init-bank
 python /jail/zoobar/zoodb.py init-honeychecker
 
 chown 61012:61012 /jail/zoobar/db/person/
-chmod 770 /jail/zoobar/db/person
+chmod 130 /jail/zoobar/db/person
 chown 61017:61017 /jail/zoobar/db/honeychecker/
-chmod 770 /jail/zoobar/db/honeychecker
+chmod 300 /jail/zoobar/db/honeychecker
 chown 61015:61015 /jail/zoobar/db/cred/
-chmod 700 /jail/zoobar/db/cred/
+chmod 300 /jail/zoobar/db/cred/
 chown 61012:61012 /jail/zoobar/db/transfer/
-chmod 770 /jail/zoobar/db/transfer
+chmod 330 /jail/zoobar/db/transfer
 chown 61016:61016 /jail/zoobar/db/bank/
-chmod 700 /jail/zoobar/db/bank
+chmod 300 /jail/zoobar/db/bank
 
 chown 61012:61012 /jail/zoobar/db/person/person.db
 chmod 660 /jail/zoobar/db/person/person.db
