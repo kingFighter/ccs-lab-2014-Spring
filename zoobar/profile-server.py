@@ -108,7 +108,7 @@ class ProfileServer(rpclib.RpcServer):
         userdir = os.path.join(userdir, user)
         if not os.path.exists(userdir):
             os.mkdir(userdir)
-            os.chmod(userdir, 0777)
+            os.chmod(userdir, 0330)
 
         sandbox = sandboxlib.Sandbox(userdir, uid, '/profilesvc/lockfile')
         with rpclib.RpcClient(sa) as profile_api_client:
