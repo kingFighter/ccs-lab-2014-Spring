@@ -1,0 +1,64 @@
+For Sheng Tian
+[Exercise 1: Attack privilege isolation]
+* permissions on files
+  The folders, we don't need to modify the content etc.
+1. auth_avc, bank_svc, checker_svc
+   These service don't need x priviledge.The attacker could inject
+   shell into the db, and execute it.
+2. person, profile, transfer
+   The others have read priviledge, which could expose the users' privacies.
+* profile_svc
+The gid is not properly set
+#+BEGIN_SRC
+[profile_svc]
+    cmd = /zoobar/profile-server.py
+    args = /profilesvc/sock
+    dir = /jail
+    uid = 0
+    gid = 0
+#+END_SRC
+* profile is not saved
+The profile of users is not saved.
+[Exercise 2: Attack credentials]
+* Hashing and Salting
+Hashing and salting are properly done. And tokens are properly virifiedy by the bank
+service before a transfer happends.
+But we can use 'rpc_new_user' from 'bank-server.py' to setup a new
+bank, which no user owns it.Then we can fake the recipient, and send
+credit to him, which decreases the total credits.
+
+#+BEGIN_SRC
+    def rpc_new_user(self, username):
+        return bank.new_user(username)
+#+END_SRC
+Below code snippet: it doesn't check whether such person exists.
+#+BEGIN_SRC
+def new_user(username):
+    db = bank_setup()
+    person = Bank()
+    person.username = username
+    db.add(person)
+    db.commit()
+#+END_SRC
+[Exercise 3: Attack the Python sandbox]
+* profile_svc
+The gid is not properly set
+#+BEGIN_SRC
+[profile_svc]
+    cmd = /zoobar/profile-server.py
+    args = /profilesvc/sock
+    dir = /jail
+    uid = 0
+    gid = 0
+#+END_SRC
+And the ProfileServer is not secure. If we fake the 'user' to call
+'rpc_run', then in 'ProfileAPIServer', the token is automatically
+generated, which means we can 'rpc_xfer' to steal credits.
+* User Profile
+The prividedge of user profile folder is too coarse and the attacker can steal
+information from other users' profile once he breaks out the jail.
+#+BEGIN_SRC
+        if not os.path.exists(userdir):
+            os.makedirs(userdir, 0777)
+            os.chmod(userdir, 0777)
+#+END_SRC

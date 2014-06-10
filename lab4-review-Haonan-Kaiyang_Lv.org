@@ -1,0 +1,34 @@
+For Haonan_Zhen
+[Exercise 1: Attack privilege isolation]
+* dynamic service
+The priviledge isolation is too coarse. We can get the script through
+url like '/zoobar/*.[py | cgi]', which will expose internal design.My
+design is more fine-grained.Leave much priviledge for others.
+#+BEGIN_SRC
+chown -R 61014:61014 /jail/zoobar
+#+END_SRC
+* auth_avc,bank_svc
+The priviledge isolation is too coarse. In fact, in the folder we
+don't need to modify the content(del/create) and we only need to
+read/write the db.Once the service is hacked, we can inject code to
+execute it. My design is more fine-grained.The others are similar.
+#+BEGIN_SRC
+set_perms 61015:61015 700 /jail/zoobar/db/cred
+set_perms 61015:61015 700 /jail/zoobar/db/cred/cred.db
+#+END_SRC
+[Exercise 2: Attack credentials]
+* Hashing and Salting
+They are properly done. And tokens are properly verified by the bank
+service before a transfer happens.
+[Exercise 3: Attack the Python sandbox]
+* User Profile
+The prividedge of user profile folder is too coarse and the attacker can steal
+information from other users' profile once he breaks out the jail.
+#+BEGIN_SRC
+os.chmod(userdir, 0777)
+os.chown(userdir, uid, -1)
+#+END_SRC
+* profile_svc
+And the ProfileServer is not secure. If we fake the 'user' to call
+'rpc_run', then in 'ProfileAPIServer', the token is automatically
+generated, which means we can 'rpc_xfer' to steal credits.
