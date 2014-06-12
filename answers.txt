@@ -1,1 +1,29 @@
 ## Place your answers here.
+* Exercise 1: Cookie Theft
+See Code below:  we can use the value of <input name="user".. > to
+inject javascript code.Use something like user="size%3D"10">", we can
+close the input tag.Then use <script></script> to inject our code.
+In the script, when the request is reponsed(onload), we need to
+delete unnecessary nodes to keep the website looking as before. Then
+steal the cookie with the help of getItme from
+https://developer.mozilla.org/en-US/docs/Web/API/document.cookie. Then
+use the emacs script by encoding URL.
+[users.py]
+...
+ args['req_user'] = Markup(request.args.get('user', ''))
+...
+  return render_template('users.html', **args)
+...
+[users.html]
+...
+<input type="text" name="user" value="{{ req_user }}"
+size=10></nobr><br>
+...
+* Exercise 2: Cross-Site Request Forgery
+submit returns a new page, so we make the submit target to iframe.
+We can either listen to iframe onload(or just onload function) or use
+setTimeout to open the html like file://home/httpd/lab/answer-2.html
+1. Create form(zoobars, recpient, action) with target to an iframe
+2. After submiting the form, redirect to
+   http://css.csail.mit.edu/6.858/2013/.(Here we can listen to iframe
+   onload event or use setTimeout).
