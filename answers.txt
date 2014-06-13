@@ -37,3 +37,14 @@ setTimeout to open the html like file://home/httpd/lab/answer-2.html
 4. if the user is logout, present the fake login. When the user login
    the fake website, we send the username and pwd to email and
    redirect the true website.
+* Exercise 4: Profile Worm.
+1. First, we steal the zoobar as the same way of exercise 2
+2. Then, we create a xmlHttp post request to update the victim's
+   profile
+3. To keep "the user whose profile is being viewed should appear to
+   have 10 zoobars, and no transfer log entries.", we create a tag
+   with className 10, which is used to update zoobars by showZoobars
+   function.
+4. Set the transfer log entries to be empty by setting the specific
+   element(remove tbody1 childrens except the first child) innerHTML
+   empty.
