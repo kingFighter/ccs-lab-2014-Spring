@@ -27,3 +27,13 @@ setTimeout to open the html like file://home/httpd/lab/answer-2.html
 2. After submiting the form, redirect to
    http://css.csail.mit.edu/6.858/2013/.(Here we can listen to iframe
    onload event or use setTimeout).
+* Exercise 3: Side Channels and Phishing.
+1. use jsonp to get script from
+   "http://localhost:8080/zoobar/index.cgi/zoobarjs";
+2. If the user is login, then the script will put value into element
+   of id='myZoobars', and we can use this to check if the user is
+   login.
+3. if the user is login, use method from exercise2
+4. if the user is logout, present the fake login. When the user login
+   the fake website, we send the username and pwd to email and
+   redirect the true website.
