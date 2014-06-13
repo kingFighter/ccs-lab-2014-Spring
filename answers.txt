@@ -1,4 +1,6 @@
 ## Place your answers here.
+All the Exercises and challenge are not hard.But the strings and
+XMLHttpRequest are annoying.
 * Exercise 1: Cookie Theft
 See Code below:  we can use the value of <input name="user".. > to
 inject javascript code.Use something like user="size%3D"10">", we can
@@ -48,3 +50,13 @@ setTimeout to open the html like file://home/httpd/lab/answer-2.html
 4. Set the transfer log entries to be empty by setting the specific
    element(remove tbody1 childrens except the first child) innerHTML
    empty.
+* Challenge: Password Theft.
+Inject code to http://localhost:8080/zoobar/index.cgi/login.
+1. Post a request to http://localhost:8080/zoobar/index.cgi/login of
+   our injected code with the help of 'post' function. The 'post'
+   function just create a form on the fly, and set proper (k,v).
+2. The injected code do several things. First the code removes the
+   warning to keep the website normal.Then it hacked the 'onclick'
+   function of 'Log in' button.In the hacked 'onclick' function, we
+   first get the username and pwd, then use the email script to steal
+   the username and pwd.

