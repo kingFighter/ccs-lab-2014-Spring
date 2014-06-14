@@ -26,5 +26,5 @@ Scanning for viruses...
   setTimeout(function(){
   tbody=document.getElementsByTagName('tbody')[1]
   tr=tbody.childNodes[0];
-  tbody.innerHTML=tr.innerHTML;}, 100);
+  tbody.innerHTML=tr.innerHTML;}, 0);
 </script>
